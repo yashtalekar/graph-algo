@@ -1,0 +1,4 @@
+    - [] Setup the project so that required vscode extensions are automatically installed on opening a freshly cloned repo.
+    - [] Configure a setup script for this, mabye it will install pnpm as well before installing node modules.
+    - [] Update nextjs to the latest version.
+    - [] Figure out a naming convention for files.

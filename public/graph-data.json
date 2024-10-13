@@ -1,0 +1,11 @@
+{
+  "nodes": [
+    { "key": "A", "attributes": { "label": "Node A" } },
+    { "key": "B", "attributes": { "label": "Node B" } },
+    { "key": "C", "attributes": { "label": "Node C" } }
+  ],
+  "edges": [
+    { "source": "A", "target": "B", "attributes": { "weight": 5 } },
+    { "source": "B", "target": "C", "attributes": { "weight": 10 } }
+  ]
+}
