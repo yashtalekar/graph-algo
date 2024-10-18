@@ -2,10 +2,25 @@
   "nodes": [
     { "key": "A", "attributes": { "label": "Node A" } },
     { "key": "B", "attributes": { "label": "Node B" } },
-    { "key": "C", "attributes": { "label": "Node C" } }
+    { "key": "C", "attributes": { "label": "Node C" } },
+    { "key": "D", "attributes": { "label": "Node D" } },
+    { "key": "E", "attributes": { "label": "Node E" } },
+    { "key": "F", "attributes": { "label": "Node F" } },
+    { "key": "G", "attributes": { "label": "Node G" } },
+    { "key": "H", "attributes": { "label": "Node H" } },
+    { "key": "I", "attributes": { "label": "Node I" } },
+    { "key": "J", "attributes": { "label": "Node J" } }
   ],
   "edges": [
-    { "source": "A", "target": "B", "attributes": { "weight": 5 } },
-    { "source": "B", "target": "C", "attributes": { "weight": 10 } }
+    { "source": "A", "target": "B", "attributes": { "weight": 1 } },
+    { "source": "A", "target": "C", "attributes": { "weight": 2 } },
+    { "source": "B", "target": "D", "attributes": { "weight": 1 } },
+    { "source": "C", "target": "E", "attributes": { "weight": 3 } },
+    { "source": "D", "target": "F", "attributes": { "weight": 2 } },
+    { "source": "E", "target": "G", "attributes": { "weight": 1 } },
+    { "source": "F", "target": "H", "attributes": { "weight": 2 } },
+    { "source": "H", "target": "J", "attributes": { "weight": 1 } },
+    { "source": "I", "target": "J", "attributes": { "weight": 2 } },
+    { "source": "A", "target": "H", "attributes": { "weight": 2 } }
   ]
 }

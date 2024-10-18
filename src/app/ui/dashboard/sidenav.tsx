@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import NavLinks from '@/app/ui/dashboard/nav-links';
-import { PowerIcon } from '@heroicons/react/24/outline';
+import Link from "next/link";
+import NavLinks from "@/app/ui/dashboard/nav-links";
+import { PowerIcon } from "@heroicons/react/24/outline";
 
 export default function SideNav() {
   return (
@@ -10,7 +10,7 @@ export default function SideNav() {
         href="/"
       >
         <div className="w-32 text-white md:w-40">
-        <div>Logo</div>
+          <div>*Insert a graph icon here*</div>
         </div>
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">

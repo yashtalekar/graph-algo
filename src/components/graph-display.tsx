@@ -1,13 +1,18 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { loadGraph } from "../app/lib/graph-logic";
+import {
+  loadGraph,
+  bfsStepByStep,
+  updateGraphWithBFSState,
+} from "../app/lib/graph-logic";
 import { visualizeGraph } from "../app/lib/graph-visualize";
 import Graph from "graphology";
 
 const GraphDisplay: React.FC = () => {
   const svgRef = useRef<SVGSVGElement | null>(null); // Reference to the SVG element
   const [graph, setGraph] = useState<Graph | null>(null);
+
   const graphInitialized = useRef(false); // New flag to track if the graph has been initialized
 
   useEffect(() => {
@@ -17,6 +22,7 @@ const GraphDisplay: React.FC = () => {
     loadGraph()
       .then((graph) => {
         setGraph(graph); // Store the graph in the state
+        console.log(bfsStepByStep(graph, "A")); // Log the BFS steps
       })
       .catch((error) => console.error("Error loading graph:", error));
   }, []);
@@ -30,10 +36,15 @@ const GraphDisplay: React.FC = () => {
   }, [graph]); // Run this effect when the graph is available
 
   return (
-    <div>
-      <h1>Graph Visualization</h1>
+    <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-300 w-full max-w-4xl mx-auto">
+      <h1 className="text-lg font-semibold mb-4">Graph Visualization</h1>
       {/* D3 will render the graph into this SVG */}
-      <svg ref={svgRef} width="800" height="600"></svg>
+      <svg
+        ref={svgRef}
+        width="800"
+        height="600"
+        className="w-full h-auto"
+      ></svg>
     </div>
   );
 };
