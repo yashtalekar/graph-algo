@@ -95,3 +95,27 @@ export function visualizeGraph(graph: Graph, svgElement: SVGSVGElement) {
     d.fy = null;
   }
 }
+
+export function visualizeGraphWithState(
+  graph: Graph,
+  svgElement: SVGSVGElement
+) {
+  const svg = d3.select(svgElement);
+
+  // Select existing circles and update their color based on state
+  const nodes = svg.selectAll("circle");
+
+  nodes.attr("fill", (d: any) => {
+    const state = graph.getNodeAttribute(d.id, "state");
+    switch (state) {
+      case "visited":
+        return "green";
+      case "current":
+        return "orange";
+      case "queued":
+        return "yellow";
+      default:
+        return "blue";
+    }
+  });
+}

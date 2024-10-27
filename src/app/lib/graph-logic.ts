@@ -4,6 +4,7 @@ interface BFSState {
   currentNode: string;
   visited: string[];
   queue: string[];
+  // Rest of the nodes are unvisited. Do we need a property? probs not
 }
 
 // Function to load the graph data and initialize Graphology
@@ -44,12 +45,14 @@ export function bfsStepByStep(graph: Graph, startNode: string): BFSState[] {
         queue.push(neighbor);
         // Record each step after visiting a new node
         steps.push({
-          currentNode: neighbor,
+          currentNode: node,
           visited: Array.from(visited),
           queue: [...queue],
         });
       }
     });
+
+    // We could have per node steps, where we push a step only after all the neighbors are visited.
   }
 
   return steps;

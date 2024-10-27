@@ -6,12 +6,18 @@ import {
   bfsStepByStep,
   updateGraphWithBFSState,
 } from "../app/lib/graph-logic";
-import { visualizeGraph } from "../app/lib/graph-visualize";
+import {
+  visualizeGraph,
+  visualizeGraphWithState,
+} from "../app/lib/graph-visualize";
 import Graph from "graphology";
 
 const GraphDisplay: React.FC = () => {
   const svgRef = useRef<SVGSVGElement | null>(null); // Reference to the SVG element
   const [graph, setGraph] = useState<Graph | null>(null);
+
+  const [bfsSteps, setBfsSteps] = useState<any[]>([]);
+  const [currentStep, setCurrentStep] = useState<number>(0);
 
   const graphInitialized = useRef(false); // New flag to track if the graph has been initialized
 
@@ -22,7 +28,8 @@ const GraphDisplay: React.FC = () => {
     loadGraph()
       .then((graph) => {
         setGraph(graph); // Store the graph in the state
-        console.log(bfsStepByStep(graph, "A")); // Log the BFS steps
+        // console.log(bfsStepByStep(graph, "A")); // Log the BFS steps
+        setBfsSteps(bfsStepByStep(graph, "A"));
       })
       .catch((error) => console.error("Error loading graph:", error));
   }, []);
@@ -35,6 +42,22 @@ const GraphDisplay: React.FC = () => {
     }
   }, [graph]); // Run this effect when the graph is available
 
+  // Function to move to the next step
+  const nextStep = () => {
+    if (currentStep < bfsSteps.length - 1) {
+      if (graph && svgRef.current) {
+        updateGraphWithBFSState(graph, bfsSteps[currentStep + 1]); // If we call this after the setCurrentStep, it won't be up to date because react's set state is asynchronous by nature.
+        // Will this next line execute immedieately after graph is updated? Or is graph update asychronous
+        visualizeGraphWithState(graph, svgRef.current);
+        //console.log("Graph state is: ", graph);
+        console.log("in graph display, graph nodes are ", graph.nodes());
+      }
+      setCurrentStep(currentStep + 1);
+    }
+  };
+  console.log("current step is:", currentStep);
+  console.log("bfsSteps is: ", bfsSteps);
+
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-300 w-full max-w-4xl mx-auto">
       <h1 className="text-lg font-semibold mb-4">Graph Visualization</h1>
@@ -45,6 +68,7 @@ const GraphDisplay: React.FC = () => {
         height="600"
         className="w-full h-auto"
       ></svg>
+      <button onClick={nextStep}>Next Step</button>
     </div>
   );
 };
