@@ -5,11 +5,11 @@ import {
   loadGraph,
   bfsStepByStep,
   updateGraphWithBFSState,
-} from "../app/lib/graph-logic";
+} from "../lib/graph-logic";
 import {
   visualizeGraph,
   visualizeGraphWithState,
-} from "../app/lib/graph-visualize";
+} from "../lib/graph-visualize";
 import Graph from "graphology";
 
 const GraphDisplay: React.FC = () => {
