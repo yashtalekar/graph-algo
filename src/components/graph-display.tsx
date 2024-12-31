@@ -3,40 +3,38 @@
 import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 import Graph from "graphology";
-import {
-  visualizeGraph,
-  visualizeGraphWithState,
-} from "../lib/graph-visualize";
+import { visualizeGraph, visualizeGraphWithState } from "@/lib/graph-visualize";
 import useGraphStore from "@/store/graphStore";
 
 export default function GraphDisplay() {
   const svgRef = useRef<SVGSVGElement | null>(null);
-  const hasInitializedRef = useRef(false);
 
-  // Subscribe to both graph + version
-  const { graph, graphVersion } = useGraphStore();
+  // We have 2 separate counters
+  const { graph, structureVersion, colorVersion } = useGraphStore();
 
-  // 1) Initialize once
-  useEffect(() => {
-    if (graph && svgRef.current && !hasInitializedRef.current) {
-      d3.select(svgRef.current).selectAll("*").remove();
-      visualizeGraph(graph, svgRef.current);
-      hasInitializedRef.current = true;
-    }
-  }, [graph]);
-
-  // 2) Update colors whenever graph *or* version changes
+  // On structure changes, we do a full re-init of the force layout
   useEffect(() => {
     if (graph && svgRef.current) {
-      console.log("Color update triggered by version=", graphVersion);
+      d3.select(svgRef.current).selectAll("*").remove();
+      visualizeGraph(graph, svgRef.current);
+    }
+  }, [graph, structureVersion]);
+
+  // On color changes, just update the color of existing nodes
+  useEffect(() => {
+    if (graph && svgRef.current) {
       visualizeGraphWithState(graph, svgRef.current);
     }
-  }, [graph, graphVersion]);
+  }, [graph, colorVersion]);
 
   return (
-    <div className="relative bg-white shadow-lg rounded-lg border border-gray-300 max-w-4xl mx-auto">
-      Hello, World!
-      <svg ref={svgRef} width="800" height="600" className="w-full h-auto" />
+    <div className="relative bg-white shadow-lg rounded-lg border border-gray-300 max-w-full w-full mx-auto">
+      <svg
+        ref={svgRef}
+        className="w-full h-[600px] border border-black"
+        viewBox="0 0 800 600"
+        preserveAspectRatio="xMidYMid meet"
+      />
     </div>
   );
 }

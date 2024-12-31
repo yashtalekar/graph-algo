@@ -1,73 +1,60 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Graph from "graphology";
 import GraphDisplay from "@/components/graph-display";
+import GraphEditor from "@/components/graph-editor";
 import useGraphStore from "@/store/graphStore";
-import {
-  loadGraph,
-  bfsStepByStep,
-  updateGraphWithBFSState,
-} from "@/lib/graph-logic";
+import { bfsStepByStep, updateGraphWithBFSState } from "@/lib/graph-logic";
 
 export default function BFSPage() {
-  const { graph, setGraph, incrementGraphVersion } = useGraphStore();
+  const { graph, structureVersion, colorVersion, incrementColorVersion } =
+    useGraphStore();
   const [bfsSteps, setBfsSteps] = useState<any[]>([]);
   const [currentStep, setCurrentStep] = useState<number>(0);
 
-  // Load the graph from JSON if not already loaded
-  // and compute BFS steps in local state
+  /**
+   * 1) Whenever the graph or graphVersion changes, re-run BFS from scratch.
+   *    This ensures BFS steps reflect added/removed nodes/edges.
+   */
   useEffect(() => {
-    if (!graph) {
-      loadGraph()
-        .then((g) => {
-          setGraph(g); // store the graph in the global store
-          setBfsSteps(bfsStepByStep(g, "A"));
-        })
-        .catch((err) => console.error("Error loading graph:", err));
-    } else if (bfsSteps.length === 0) {
-      // If we already have a graph but no BFS steps, compute them
+    if (graph) {
+      console.log("Recomputing BFS steps because graph or version changed.");
       setBfsSteps(bfsStepByStep(graph, "A"));
+      setCurrentStep(0); // reset BFS step index to the start
     }
-  }, [graph, bfsSteps, setGraph]);
+  }, [graph, structureVersion]);
 
-  // Go to next BFS step
+  /**
+   * 2) Advance BFS by one step
+   */
   const nextStep = () => {
     if (!graph) return;
-    console.log("next step called!");
-    console.log("bfsSteps is: ", bfsSteps);
     if (currentStep < bfsSteps.length - 1) {
       const nextIndex = currentStep + 1;
-      const state = bfsSteps[nextIndex];
-
-      // This sets the BFS info on the graph's node attributes
-      updateGraphWithBFSState(graph, state);
-      console.log("update graph with state called!");
-
-      // Because Graphology mutates in place, we "touch" the store to trigger
-      // a re-render in GraphDisplay. For example:
-      setGraph(graph);
-      incrementGraphVersion();
-
-      // Advance local BFS step
+      updateGraphWithBFSState(graph, bfsSteps[nextIndex]);
+      incrementColorVersion(); // refresh the GraphDisplay
       setCurrentStep(nextIndex);
     }
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">BFS Visualization</h1>
+    <div className="flex flex-row items-start gap-4 p-4 w-full">
+      {/* Left side: BFS & Graph */}
+      <div className="flex-1 flex flex-col space-y-4">
+        <h1 className="text-xl font-bold">BFS Visualization</h1>
+        <GraphDisplay />
+        <button
+          onClick={nextStep}
+          className="px-4 py-2 bg-blue-500 text-white rounded self-start"
+        >
+          Next BFS Step
+        </button>
+      </div>
 
-      {/* The graph display is a separate component that 
-          just shows whatever is in the global `graph` */}
-      <GraphDisplay />
-
-      <button
-        onClick={nextStep}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
-      >
-        Next Step
-      </button>
+      {/* Right side: Graph Editor */}
+      <div className="w-1/3">
+        <GraphEditor />
+      </div>
     </div>
   );
 }
