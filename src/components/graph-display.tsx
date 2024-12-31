@@ -1,76 +1,42 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import {
-  loadGraph,
-  bfsStepByStep,
-  updateGraphWithBFSState,
-} from "../lib/graph-logic";
+import React, { useEffect, useRef } from "react";
+import * as d3 from "d3";
+import Graph from "graphology";
 import {
   visualizeGraph,
   visualizeGraphWithState,
 } from "../lib/graph-visualize";
-import Graph from "graphology";
+import useGraphStore from "@/store/graphStore";
 
-const GraphDisplay: React.FC = () => {
-  const svgRef = useRef<SVGSVGElement | null>(null); // Reference to the SVG element
-  const [graph, setGraph] = useState<Graph | null>(null);
+export default function GraphDisplay() {
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const hasInitializedRef = useRef(false);
 
-  const [bfsSteps, setBfsSteps] = useState<any[]>([]);
-  const [currentStep, setCurrentStep] = useState<number>(0);
+  // Subscribe to both graph + version
+  const { graph, graphVersion } = useGraphStore();
 
-  const graphInitialized = useRef(false); // New flag to track if the graph has been initialized
-
+  // 1) Initialize once
   useEffect(() => {
-    // Load the graph using Graphology and set it in state
+    if (graph && svgRef.current && !hasInitializedRef.current) {
+      d3.select(svgRef.current).selectAll("*").remove();
+      visualizeGraph(graph, svgRef.current);
+      hasInitializedRef.current = true;
+    }
+  }, [graph]);
 
-    // TODO: Load graph should be passes as a prop to this component, so we don't need to import it here.
-    loadGraph()
-      .then((graph) => {
-        setGraph(graph); // Store the graph in the state
-        // console.log(bfsStepByStep(graph, "A")); // Log the BFS steps
-        setBfsSteps(bfsStepByStep(graph, "A"));
-      })
-      .catch((error) => console.error("Error loading graph:", error));
-  }, []);
-
+  // 2) Update colors whenever graph *or* version changes
   useEffect(() => {
-    // Once the graph is loaded, visualize it using D3.js
-    if (graph && svgRef.current && !graphInitialized.current) {
-      visualizeGraph(graph, svgRef.current); // Pass graph and SVG element to visualizeGraph
-      graphInitialized.current = true; // Set the flag to true to prevent re-rendering
+    if (graph && svgRef.current) {
+      console.log("Color update triggered by version=", graphVersion);
+      visualizeGraphWithState(graph, svgRef.current);
     }
-  }, [graph]); // Run this effect when the graph is available
-
-  // Function to move to the next step
-  const nextStep = () => {
-    if (currentStep < bfsSteps.length - 1) {
-      if (graph && svgRef.current) {
-        updateGraphWithBFSState(graph, bfsSteps[currentStep + 1]); // If we call this after the setCurrentStep, it won't be up to date because react's set state is asynchronous by nature.
-        // Will this next line execute immedieately after graph is updated? Or is graph update asychronous
-        visualizeGraphWithState(graph, svgRef.current);
-        //console.log("Graph state is: ", graph);
-        console.log("in graph display, graph nodes are ", graph.nodes());
-      }
-      setCurrentStep(currentStep + 1);
-    }
-  };
-  console.log("current step is:", currentStep);
-  console.log("bfsSteps is: ", bfsSteps);
+  }, [graph, graphVersion]);
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-300 w-full max-w-4xl mx-auto">
-      <h1 className="text-lg font-semibold mb-4">Graph Visualization</h1>
-      {/* D3 will render the graph into this SVG */}
-      <svg
-        ref={svgRef}
-        width="800"
-        height="600"
-        className="w-full h-auto"
-      ></svg>
-      <button onClick={nextStep}>Next Step</button>
+    <div className="relative bg-white shadow-lg rounded-lg border border-gray-300 max-w-4xl mx-auto">
+      Hello, World!
+      <svg ref={svgRef} width="800" height="600" className="w-full h-auto" />
     </div>
   );
-};
-
-export default GraphDisplay;
+}
