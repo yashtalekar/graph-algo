@@ -38,23 +38,25 @@ export default function BFSPage() {
   };
 
   return (
-    <div className="flex flex-row items-start gap-4 p-4 w-full">
-      {/* Left side: BFS & Graph */}
-      <div className="flex-1 flex flex-col space-y-4">
-        <h1 className="text-xl font-bold">BFS Visualization</h1>
-        <GraphDisplay />
-        <button
-          onClick={nextStep}
-          className="px-4 py-2 bg-blue-500 text-white rounded self-start"
-        >
-          Next BFS Step
-        </button>
-      </div>
+    <>
+      <h1 className="text-xl font-bold">BFS Visualization</h1>
+      <div className="flex flex-row items-start gap-4 p-4 w-full">
+        {/* Left side: BFS & Graph */}
+        <div className="flex-1 flex flex-col space-y-4">
+          <GraphDisplay />
+          <button
+            onClick={nextStep}
+            className="px-4 py-2 bg-blue-500 text-white rounded self-start"
+          >
+            Next BFS Step
+          </button>
+        </div>
 
-      {/* Right side: Graph Editor */}
-      <div className="w-1/3">
-        <GraphEditor />
+        {/* Right side: Graph Editor */}
+        <div className="w-1/3">
+          <GraphEditor />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

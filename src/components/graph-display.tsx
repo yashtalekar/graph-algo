@@ -31,7 +31,7 @@ export default function GraphDisplay() {
     <div className="relative bg-white shadow-lg rounded-lg border border-gray-300 max-w-full w-full mx-auto">
       <svg
         ref={svgRef}
-        className="w-full h-[600px] border border-black"
+        className="w-full h-[600px] "
         viewBox="0 0 800 600"
         preserveAspectRatio="xMidYMid meet"
       />
